@@ -32,15 +32,18 @@ service cloud.firestore {
 
     function isValidUser(data) {
       return data.keys().hasAll(['username', 'name', 'schoolType', 'grade', 'avatar', 'xp', 'studyGoalHours', 'joinedAt']) &&
-             data.keys().size() == 8 &&
-             data.username is string && data.username.size() >= 3 && data.username.size() <= 30 &&
-             data.name is string && data.name.size() <= 100 &&
-             (data.schoolType == 'Ortaokul' || data.schoolType == 'Lise') &&
-             data.grade is int && data.grade >= 5 && data.grade <= 12 &&
-             data.avatar is string && data.avatar.size() <= 10 &&
+             data.keys().size() >= 8 && data.keys().size() <= 13 &&
+             data.username is string && data.username.size() >= 1 && data.username.size() <= 100 &&
+             data.name is string && data.name.size() <= 200 &&
+             (data.schoolType == 'Ortaokul' || data.schoolType == 'Lise' || data.schoolType == 'Middle School' || data.schoolType == 'High School') &&
+             data.grade is int && data.grade >= 1 && data.grade <= 12 &&
+             data.avatar is string && data.avatar.size() <= 1000 &&
              data.xp is int && data.xp >= 0 &&
              data.studyGoalHours is int && data.studyGoalHours >= 1 && data.studyGoalHours <= 100 &&
-             data.joinedAt is string && data.joinedAt.size() <= 50;
+             data.joinedAt is string && data.joinedAt.size() <= 100 &&
+             (!('id' in data) || data.id is string) &&
+             (!('email' in data) || data.email is string || data.email == null) &&
+             (!('completedTopics' in data) || data.completedTopics is list);
     }
 
     function isValidUsername(data, userId) {
@@ -54,7 +57,7 @@ service cloud.firestore {
              data.friendId is string && data.friendId.size() <= 128 &&
              data.username is string && data.username.size() >= 3 && data.username.size() <= 30 &&
              data.name is string && data.name.size() <= 100 &&
-             data.avatar is string && data.avatar.size() <= 10 &&
+             data.avatar is string && data.avatar.size() <= 1000 &&
              data.xp is int && data.xp >= 0 &&
              (data.status == 'request_sent' || data.status == 'request_received' || data.status == 'accepted') &&
              data.updatedAt is string && data.updatedAt.size() <= 50;

@@ -58,6 +58,8 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
   const [settingsPhotoUrl, setSettingsPhotoUrl] = useState<string>('');
   const [settingsStudyGoal, setSettingsStudyGoal] = useState<number>(user?.studyGoalHours || 10);
   const [updatingSettings, setUpdatingSettings] = useState<boolean>(false);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
+  const [settingsSuccess, setSettingsSuccess] = useState<string | null>(null);
 
   // AI Assistant Chat Box state
   const [chatOpen, setChatOpen] = useState<boolean>(false);
@@ -217,6 +219,8 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     setUpdatingSettings(true);
+    setSettingsError(null);
+    setSettingsSuccess(null);
 
     const updatePayload: any = {
       name: settingsName.trim(),
@@ -236,8 +240,12 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
         ...user,
         ...updatePayload
       });
-      setShowSettings(false);
+      setSettingsSuccess('Profil ayarlarınız (Çevrimdışı Modda) başarıyla güncellendi! 🎉');
       setUpdatingSettings(false);
+      setTimeout(() => {
+        setShowSettings(false);
+        setSettingsSuccess(null);
+      }, 1500);
       return;
     }
 
@@ -251,10 +259,14 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
         ...updatePayload
       });
 
-      setShowSettings(false);
-    } catch (err) {
+      setSettingsSuccess('Profil ayarlarınız veritabanı ile başarıyla eşitlendi! 🎉');
+      setTimeout(() => {
+        setShowSettings(false);
+        setSettingsSuccess(null);
+      }, 1500);
+    } catch (err: any) {
       console.error(err);
-      handleFirestoreError(err, OperationType.UPDATE, `users/${user.id}`);
+      setSettingsError('Ayarlar kaydedilirken bir hata oluştu. Veritabanı izinlerinizi kontrol edin.');
     } finally {
       setUpdatingSettings(false);
     }
@@ -400,6 +412,20 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
             <UserIcon className="h-5 w-5 text-indigo-500" />
             Profile & Class Settings
           </h3>
+
+          {settingsSuccess && (
+            <div className="mb-4 p-3.5 bg-emerald-50 border border-emerald-100 rounded-2xl text-emerald-800 text-xs font-semibold flex items-center gap-2 animate-pulse">
+              <span className="text-emerald-500 font-extrabold text-sm">✓</span>
+              {settingsSuccess}
+            </div>
+          )}
+          {settingsError && (
+            <div className="mb-4 p-3.5 bg-rose-50 border border-rose-100 rounded-2xl text-rose-800 text-xs font-semibold flex items-center gap-2">
+              <span className="text-rose-500 font-extrabold text-sm">⚠️</span>
+              {settingsError}
+            </div>
+          )}
+
           <form onSubmit={handleSaveSettings} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
