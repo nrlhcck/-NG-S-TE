@@ -633,16 +633,14 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="bg-slate-900 text-white rounded-3xl p-6 flex flex-col justify-between shadow-lg relative overflow-hidden text-left">
-          <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 h-32 w-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+              <div className="bg-gradient-to-tr from-indigo-50/40 to-indigo-50/10 border border-indigo-100/40 text-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-xs relative overflow-hidden text-left">
+          <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 h-32 w-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
           <div>
-            <h4 className="text-lg font-bold flex items-center gap-2">
-              <PlusCircle className="text-indigo-400" />
+            <h4 className="text-lg font-bold flex items-center gap-2 text-slate-800">
+              <PlusCircle className="text-indigo-650" />
               Log Study Session
             </h4>
-            <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+            <p className="text-slate-500 text-xs mt-2 leading-relaxed">
               Record reading, listening, or grammar exercises. Adding studies boosts your level, XP, and populates learning logs instantly.
             </p>
           </div>
@@ -655,7 +653,7 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
               }
               setShowLogModal(true);
             }}
-            className="w-full mt-6 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-2xl transition-all shadow-md active:scale-98"
+            className="w-full mt-6 py-3 px-4 bg-indigo-650 hover:bg-indigo-600 text-white text-xs font-bold rounded-2xl transition-all shadow-xs active:scale-98"
           >
             Save Learning Study Period
           </button>
@@ -663,36 +661,36 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
       </div>
 
       {/* 4. CHAT WITH AI LINGO BUDDY */}
-      <div className="bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 border border-slate-700/50 shadow-lg text-left relative overflow-hidden">
-        <div className="absolute top-1/2 left-3/4 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-tr from-indigo-50/50 via-white to-purple-50/30 text-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200/50 shadow-xs text-left relative overflow-hidden">
+        <div className="absolute top-1/2 left-3/4 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
           <div className="space-y-2 max-w-lg">
-            <span className="px-3 py-0.5 text-[9px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full uppercase tracking-widest">
+            <span className="px-3 py-0.5 text-[9px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest">
               AI Powered Assistance
             </span>
-            <h3 className="text-xl font-bold flex items-center gap-2">
-              <MessageSquare className="h-5.5 w-5.5 text-indigo-400 animate-bounce" />
+            <h3 className="text-xl font-bold flex items-center gap-2 text-slate-900">
+              <MessageSquare className="h-5.5 w-5.5 text-indigo-600" />
               Practice with your Lingo AI Buddy
             </h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
+            <p className="text-slate-500 text-xs leading-relaxed">
               Stuck on "Have/Has Got" grammar, or need definitions? Chat with Lingo Buddy. Our secure full-stack backend handles Gemini queries seamlessly in English and Turkish!
             </p>
           </div>
           <button
             onClick={() => setChatOpen(!chatOpen)}
-            className="px-5 py-3 bg-white text-slate-950 hover:bg-slate-150 text-xs font-bold rounded-2xl transition-all duration-300 shadow-xl shrink-0"
+            className="px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-2xl transition-all duration-300 shadow-xs shrink-0"
           >
             {chatOpen ? "Minimize AI Buddy" : "Activate Live AI Buddy Chat"}
           </button>
         </div>
 
         {chatOpen && (
-          <div className="mt-6 border-t border-slate-705/80 pt-6 space-y-4">
-            <div className="bg-slate-950/60 rounded-2xl p-4 max-h-72 overflow-y-auto space-y-3.5 border border-slate-800/80">
+          <div className="mt-6 border-t border-slate-200/60 pt-6 space-y-4">
+            <div className="bg-slate-50/70 rounded-2xl p-4 max-h-72 overflow-y-auto space-y-3.5 border border-slate-200/60">
               {chatThread.map((msg, idx) => (
                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`p-3.5 rounded-2xl text-xs leading-relaxed max-w-sm ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-850/90 text-slate-200 border border-slate-750 rounded-tl-none'}`}>
-                    <p className="font-bold text-[9px] uppercase tracking-wider text-indigo-300 mb-0.5">
+                  <div className={`p-3.5 rounded-2xl text-xs leading-relaxed max-w-sm ${msg.role === 'user' ? 'bg-indigo-650 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-200/50 rounded-tl-none shadow-3xs'}`}>
+                    <p className="font-bold text-[9px] uppercase tracking-wider text-indigo-600 mb-0.5">
                       {msg.role === 'user' ? 'You' : 'Lingo Buddy'}
                     </p>
                     <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -701,8 +699,8 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
               ))}
               {sendingChat && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-855 text-slate-350 p-4 rounded-2xl text-xs flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin text-indigo-400" />
+                  <div className="bg-white text-slate-500 border border-slate-200/50 p-4 rounded-2xl text-xs flex items-center gap-2 shadow-3xs">
+                    <Loader2 className="h-4 w-4 animate-spin text-indigo-600" />
                     <span>Buddy is thinking...</span>
                   </div>
                 </div>
@@ -716,19 +714,19 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
                 placeholder="Ask me anything: When do I use 'has got' instead of 'have got'?"
-                className="flex-1 px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-white text-sm"
+                className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-800 placeholder-slate-400 text-sm"
               />
               <button
                 type="submit"
                 disabled={sendingChat || !chatMessage.trim()}
-                className="px-4 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-all flex items-center justify-center shrink-0"
+                className="px-4 py-3 bg-indigo-650 hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-all flex items-center justify-center shrink-0"
               >
                 <Send className="h-4 w-4" />
               </button>
             </form>
           </div>
         )}
-      </div>
+      </div>    </div>
 
       {/* 5. LIVE SYNCED STUDY RECORDS */}
       <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-2xs">

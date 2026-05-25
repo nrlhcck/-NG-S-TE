@@ -466,7 +466,7 @@ export default function Friends({ user, onUpdateUser }: FriendsProps) {
 
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-all shadow-md active:scale-98 flex items-center justify-center gap-1.5 outline-none"
+          className="py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition-all shadow-md active:scale-98 flex items-center justify-center gap-1.5 outline-none"
         >
           <Plus className="h-4 w-4" />
           Search Friends Directory
@@ -526,7 +526,7 @@ export default function Friends({ user, onUpdateUser }: FriendsProps) {
               <button
                 type="button"
                 onClick={() => handleSendRequest(searchResult)}
-                className="py-1.5 px-3 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold rounded-lg transition-all flex items-center gap-1"
+                className="py-1.5 px-3 bg-indigo-600 hover:bg-indigo-550 text-white text-[10px] font-bold rounded-lg transition-all flex items-center gap-1"
               >
                 <UserCheck className="h-3 w-3" /> Send Request
               </button>
@@ -604,7 +604,7 @@ export default function Friends({ user, onUpdateUser }: FriendsProps) {
                     onClick={() => setCompareFriendId(fr.friendId)}
                     className={`w-full p-3 rounded-2xl border transition-all flex items-center justify-between outline-none ${
                       compareFriendId === fr.friendId
-                        ? 'bg-slate-900 border-slate-900 text-white shadow-sm'
+                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
                         : 'bg-slate-50 border-slate-200/50 hover:bg-slate-100 text-slate-700'
                     }`}
                   >
@@ -754,13 +754,13 @@ export default function Friends({ user, onUpdateUser }: FriendsProps) {
           )}
 
           {/* GLOBAL ARENA HIGHSCORES LEADERBOARD */}
-          <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-md relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
-              <h4 className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 text-indigo-300">
-                <Trophy className="h-4 w-4 text-amber-400 fill-amber-400 animate-bounce" />
+          <div className="bg-white border border-slate-200/60 rounded-3xl p-6 shadow-xs relative overflow-hidden text-slate-800">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 text-indigo-700">
+                <Trophy className="h-4 w-4 text-amber-500 fill-amber-500 animate-bounce" />
                 Chapter Leaderboard rankings (XP)
               </h4>
-              <span className="text-[10px] font-mono opacity-60 tracking-wider font-bold">REAL-TIME RANKED</span>
+              <span className="text-[10px] font-mono text-slate-400 tracking-wider font-bold">REAL-TIME RANKED</span>
             </div>
 
             <div className="space-y-3">
@@ -772,25 +772,25 @@ export default function Friends({ user, onUpdateUser }: FriendsProps) {
                     key={player.id}
                     className={`p-3.5 rounded-2xl flex items-center justify-between transition-all ${
                       player.isSelf
-                        ? 'bg-indigo-600/30 border-2 border-indigo-550 border-indigo-500'
-                        : 'bg-white/5 border border-white/5'
+                        ? 'bg-indigo-50 border border-indigo-200'
+                        : 'bg-slate-50/70 border border-slate-100'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-indigo-200 font-extrabold text-xs w-6 text-center">{medal}</span>
-                      <div className="h-10 w-10 bg-slate-800 border border-slate-700/80 rounded-xl flex items-center justify-center overflow-hidden">
+                      <span className="text-indigo-600 font-extrabold text-xs w-6 text-center">{medal}</span>
+                      <div className="h-10 w-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center overflow-hidden shadow-2xs">
                         {renderAvatar(player.avatar)}
                       </div>
                       <div>
-                        <h5 className="font-extrabold text-xs">
-                          {player.name} {player.isSelf && <span className="text-[10px] text-fuchsia-400 font-extrabold ml-1 uppercase bg-fuchsia-400/10 px-1.5 py-0.5 rounded">You</span>}
+                        <h5 className="font-extrabold text-xs text-slate-800">
+                          {player.name} {player.isSelf && <span className="text-[10px] text-indigo-600 font-extrabold ml-1 uppercase bg-indigo-100/50 px-1.5 py-0.5 rounded">You</span>}
                         </h5>
-                        <p className="text-[10px] opacity-60 tracking-wider">@{player.username}</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">@{player.username}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-mono font-extrabold text-amber-300">{player.xp} XP</span>
-                      <p className="text-[9px] opacity-40 font-bold mt-1 uppercase tracking-wider">{player.hours} hrs completed</p>
+                      <span className="text-xs font-mono font-extrabold text-amber-600">{player.xp} XP</span>
+                      <p className="text-[9px] text-slate-400 font-bold mt-1 uppercase tracking-wider">{player.hours} hrs completed</p>
                     </div>
                   </div>
                 );

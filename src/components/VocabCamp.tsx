@@ -297,23 +297,23 @@ export default function VocabCamp({ user, onUpdateUser }: VocabCampProps) {
                 </div>
 
                 {/* BACK: Meaning translation */}
-                <div className="absolute inset-0 backface-hidden bg-rose-950 text-white rounded-3xl p-8 shadow-xs flex flex-col justify-between text-center items-center rotate-y-180">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-rose-350">
+                <div className="absolute inset-0 backface-hidden bg-rose-50 border border-rose-200 text-rose-950 rounded-3xl p-8 shadow-xs flex flex-col justify-between text-center items-center rotate-y-180">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-rose-700">
                     Back • Translation
                   </span>
 
                   <div className="space-y-1">
-                    <h3 className="text-2xl font-extrabold text-rose-100 italic">
+                    <h3 className="text-2xl font-extrabold text-rose-900 italic">
                       {activeWords[cardIndex].meaning.split(' (')[0]}
                     </h3>
                     {activeWords[cardIndex].meaning.includes('(') && (
-                      <p className="text-[10px] text-rose-300 uppercase font-black font-mono">
+                      <p className="text-[10px] text-rose-700 uppercase font-black font-mono">
                         ({activeWords[cardIndex].meaning.split('(')[1]}
                       </p>
                     )}
                   </div>
 
-                  <span className="text-[9px] font-mono tracking-wide text-rose-400 uppercase font-extrabold">
+                  <span className="text-[9px] font-mono tracking-wide text-rose-600 uppercase font-extrabold">
                     Tap anywhere to hide
                   </span>
                 </div>
@@ -329,7 +329,7 @@ export default function VocabCamp({ user, onUpdateUser }: VocabCampProps) {
                   setCardIndex((prev) => Math.max(0, prev - 1));
                   setIsFlipped(false);
                 }}
-                className="p-2.5 bg-slate-900 border border-slate-900 hover:bg-slate-850 disabled:opacity-20 disabled:cursor-not-allowed text-white rounded-xl transition-all outline-none flex items-center gap-1 text-xs font-bold"
+                className="p-2.5 bg-rose-500 border border-rose-500 hover:bg-rose-600 disabled:opacity-20 disabled:cursor-not-allowed text-white rounded-xl transition-all outline-none flex items-center gap-1 text-xs font-bold shadow-xs active:scale-98"
               >
                 <ChevronLeft className="h-4 w-4" /> Previous
               </button>
@@ -344,7 +344,7 @@ export default function VocabCamp({ user, onUpdateUser }: VocabCampProps) {
                   setCardIndex((prev) => Math.min(activeWords.length - 1, prev + 1));
                   setIsFlipped(false);
                 }}
-                className="p-2.5 bg-slate-900 border border-slate-900 hover:bg-slate-850 disabled:opacity-20 disabled:cursor-not-allowed text-white rounded-xl transition-all outline-none flex items-center gap-1 text-xs font-bold"
+                className="p-2.5 bg-rose-500 border border-rose-500 hover:bg-rose-600 disabled:opacity-20 disabled:cursor-not-allowed text-white rounded-xl transition-all outline-none flex items-center gap-1 text-xs font-bold shadow-xs active:scale-98"
               >
                 Next <ChevronRight className="h-4 w-4" />
               </button>
@@ -435,7 +435,7 @@ export default function VocabCamp({ user, onUpdateUser }: VocabCampProps) {
               <div className="flex gap-3">
                 <button
                   onClick={handleResetGame}
-                  className="flex-1 py-2 px-3 bg-slate-900 hover:bg-slate-850 text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 outline-none"
+                  className="flex-1 py-2 px-3 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 outline-none shadow-xs active:scale-98"
                 >
                   <RotateCcw className="h-4.5 w-4.5" /> Study Next Set
                 </button>
