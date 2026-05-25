@@ -54,8 +54,25 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           const userDoc = await getDoc(userDocRef);
           
           if (userDoc.exists()) {
-            // Profile exists! Complete auth flow
-            onLoginSuccess(userDoc.data() as User);
+            // Profile exists! Complete auth flow with robust normalizing triggers
+            const data = userDoc.data();
+            const normalizedUser: User = {
+              id: fUser.uid,
+              username: data.username || fUser.email?.split('@')[0] || 'student',
+              name: data.name || fUser.displayName || 'Student',
+              email: data.email || fUser.email || undefined,
+              schoolType: data.schoolType || 'Middle School',
+              grade: data.grade || 5,
+              avatar: data.avatar || '🎒',
+              xp: typeof data.xp === 'number' ? data.xp : 1500,
+              studyGoalHours: data.studyGoalHours || 10,
+              joinedAt: data.joinedAt || new Date().toISOString(),
+              completedTopics: data.completedTopics || [],
+              studyLogs: data.studyLogs || [],
+              quizResults: data.quizResults || [],
+              friends: data.friends || [],
+            };
+            onLoginSuccess(normalizedUser);
           } else {
             // New user registered! Onboarding is required.
             setIsOnboarding(true);
@@ -140,8 +157,8 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
   // Standard interactive validation for grade ranges
   useEffect(() => {
-    const available = GRADES[schoolType];
-    if (!available.includes(grade)) {
+    const available = GRADES[schoolType || 'Middle School'] || GRADES['Middle School'];
+    if (available && !available.includes(grade)) {
       setGrade(available[0]);
     }
   }, [schoolType, grade]);
@@ -554,7 +571,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                       onChange={(e) => setGrade(Number(e.target.value))}
                       className="w-full mt-1 px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none text-slate-700 font-bold text-xs cursor-pointer focus:border-indigo-500"
                     >
-                      {GRADES[schoolType].map((g) => (
+                      {(GRADES[schoolType || 'Middle School'] || GRADES['Middle School']).map((g) => (
                         <option key={g} value={g}>
                           Grade {g}
                         </option>

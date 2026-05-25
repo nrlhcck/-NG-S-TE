@@ -51,12 +51,12 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
 
   // Profile Settings toggle & fields
   const [showSettings, setShowSettings] = useState<boolean>(false);
-  const [settingsName, setSettingsName] = useState<string>(user.name);
-  const [settingsSchoolType, setSettingsSchoolType] = useState<SchoolType>(user.schoolType);
-  const [settingsGrade, setSettingsGrade] = useState<number>(user.grade);
-  const [settingsAvatar, setSettingsAvatar] = useState<string>(user.avatar);
+  const [settingsName, setSettingsName] = useState<string>(user?.name || 'Student');
+  const [settingsSchoolType, setSettingsSchoolType] = useState<SchoolType>(user?.schoolType || 'Middle School');
+  const [settingsGrade, setSettingsGrade] = useState<number>(user?.grade || 5);
+  const [settingsAvatar, setSettingsAvatar] = useState<string>(user?.avatar || '🎒');
   const [settingsPhotoUrl, setSettingsPhotoUrl] = useState<string>('');
-  const [settingsStudyGoal, setSettingsStudyGoal] = useState<number>(user.studyGoalHours);
+  const [settingsStudyGoal, setSettingsStudyGoal] = useState<number>(user?.studyGoalHours || 10);
   const [updatingSettings, setUpdatingSettings] = useState<boolean>(false);
 
   // AI Assistant Chat Box state
@@ -123,8 +123,8 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
 
   // Handle syncing selected grade within available limits
   useEffect(() => {
-    const list = GRADES[settingsSchoolType];
-    if (!list.includes(settingsGrade)) {
+    const list = GRADES[settingsSchoolType || 'Middle School'] || GRADES['Middle School'];
+    if (list && !list.includes(settingsGrade)) {
       setSettingsGrade(list[0]);
     }
   }, [settingsSchoolType, settingsGrade]);
@@ -466,7 +466,7 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
                   onChange={(e) => setSettingsGrade(Number(e.target.value))}
                   className="w-full mt-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl focus:outline-none text-slate-700 font-bold text-xs"
                 >
-                  {GRADES[settingsSchoolType].map((g) => (
+                  {(GRADES[settingsSchoolType || 'Middle School'] || GRADES['Middle School']).map((g) => (
                     <option key={g} value={g}>
                       Grade {g}
                     </option>

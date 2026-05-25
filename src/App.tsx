@@ -11,22 +11,53 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'subjects' | 'vocab_camp' | 'friends'>('dashboard');
 
+  const normalizeUserProfile = (user: any): User | null => {
+    if (!user) return null;
+    return {
+      ...user,
+      id: user.id || 'anonymous_user',
+      username: user.username || 'student',
+      name: user.name || 'Student',
+      schoolType: user.schoolType || 'Middle School',
+      grade: user.grade || 5,
+      avatar: user.avatar || '🎒',
+      xp: typeof user.xp === 'number' ? user.xp : 1500,
+      studyGoalHours: user.studyGoalHours || 10,
+      joinedAt: user.joinedAt || new Date().toISOString(),
+      completedTopics: user.completedTopics || [],
+      studyLogs: user.studyLogs || [],
+      quizResults: user.quizResults || [],
+      friends: user.friends || [],
+    };
+  };
+
   // Load current session from localStorage on register
   useEffect(() => {
     const sessionUser = localStorage.getItem('current_school_user');
     if (sessionUser) {
-      setCurrentUser(JSON.parse(sessionUser));
+      try {
+        const parsed = JSON.parse(sessionUser);
+        setCurrentUser(normalizeUserProfile(parsed));
+      } catch (e) {
+        localStorage.removeItem('current_school_user');
+      }
     }
   }, []);
 
   const handleUpdateCurrentUser = (updatedUser: User) => {
-    setCurrentUser(updatedUser);
-    localStorage.setItem('current_school_user', JSON.stringify(updatedUser));
+    const normalized = normalizeUserProfile(updatedUser);
+    setCurrentUser(normalized);
+    if (normalized) {
+      localStorage.setItem('current_school_user', JSON.stringify(normalized));
+    }
   };
 
   const handleLoginSuccess = (user: User) => {
-    setCurrentUser(user);
-    localStorage.setItem('current_school_user', JSON.stringify(user));
+    const normalized = normalizeUserProfile(user);
+    setCurrentUser(normalized);
+    if (normalized) {
+      localStorage.setItem('current_school_user', JSON.stringify(normalized));
+    }
   };
 
   const handleLogout = () => {
