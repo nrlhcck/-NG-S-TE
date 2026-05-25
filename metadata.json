@@ -1,0 +1,6 @@
+{
+  "name": "Lingo Quest",
+  "description": "An interactive English learning platform for middle and high school students featuring comprehensive courses, a vocabulary camp, a real game-based match system, and a real friend system backed by Firebase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

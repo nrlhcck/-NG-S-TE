@@ -1,0 +1,192 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and statistics information",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Unique username chosen by the student"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the student"
+        },
+        "schoolType": {
+          "type": "string",
+          "enum": ["Ortaokul", "Lise"],
+          "description": "School category"
+        },
+        "grade": {
+          "type": "integer",
+          "description": "Grade level (5-1) depending on schoolType"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "Avatar emoji or identifier"
+        },
+        "xp": {
+          "type": "integer",
+          "description": "Experience points gained by learning"
+        },
+        "studyGoalHours": {
+          "type": "integer",
+          "description": "Weekly study goal in hours"
+        },
+        "joinedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of user registration"
+        }
+      },
+      "required": ["username", "name", "schoolType", "grade", "avatar", "xp", "studyGoalHours", "joinedAt"]
+    },
+    "Username": {
+      "title": "Username Mapping",
+      "description": "Maps username string to UID to prevent name spoofing and ensure uniqueness",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The Firestore auth user ID mapping"
+        }
+      },
+      "required": ["userId"]
+    },
+    "Friend": {
+      "title": "Friend",
+      "description": "Representing a single friendship or request relation",
+      "type": "object",
+      "properties": {
+        "friendId": {
+          "type": "string",
+          "description": "UID of the friend"
+        },
+        "username": {
+          "type": "string",
+          "description": "Username of the friend"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the friend"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "Friend's avatar emoji"
+        },
+        "xp": {
+          "type": "integer",
+          "description": "Current XP of the friend"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["request_sent", "request_received", "accepted"],
+          "description": "Interpersonal friendship request status"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the state update"
+        }
+      },
+      "required": ["friendId", "username", "name", "avatar", "xp", "status", "updatedAt"]
+    },
+    "StudyLog": {
+      "title": "StudyLog",
+      "description": "Daily study entry logging",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "YYYY-MM-DD format"
+        },
+        "subjectId": {
+          "type": "string"
+        },
+        "subjectName": {
+          "type": "string"
+        },
+        "topicId": {
+          "type": "string"
+        },
+        "topicName": {
+          "type": "string"
+        },
+        "minutes": {
+          "type": "integer"
+        },
+        "questionsSolved": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Anladım", "Tekrar Etmeliyim", "Zorlandım"]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "date", "subjectId", "subjectName", "topicId", "topicName", "minutes", "questionsSolved", "status"]
+    },
+    "QuizResult": {
+      "title": "QuizResult",
+      "description": "A quiz result detailing questions answered and score",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "topicId": {
+          "type": "string"
+        },
+        "topicName": {
+          "type": "string"
+        },
+        "subjectId": {
+          "type": "string"
+        },
+        "subjectName": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        },
+        "totalQuestions": {
+          "type": "integer"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "topicId", "topicName", "subjectId", "subjectName", "score", "totalQuestions", "completedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Main user records"
+    },
+    "/usernames/{username}": {
+      "schema": "Username",
+      "description": "Global unique username registries"
+    },
+    "/users/{userId}/friends/{friendId}": {
+      "schema": "Friend",
+      "description": "User's friends listing"
+    },
+    "/users/{userId}/studyLogs/{logId}": {
+      "schema": "StudyLog",
+      "description": "User's learning session logs"
+    },
+    "/users/{userId}/quizResults/{quizId}": {
+      "schema": "QuizResult",
+      "description": "User's completed test results"
+    }
+  }
+}

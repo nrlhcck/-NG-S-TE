@@ -1,0 +1,156 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common global helper primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+
+    // Entity validation helpers
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['username', 'name', 'schoolType', 'grade', 'avatar', 'xp', 'studyGoalHours', 'joinedAt']) &&
+             data.keys().size() == 8 &&
+             data.username is string && data.username.size() >= 3 && data.username.size() <= 30 &&
+             data.name is string && data.name.size() <= 100 &&
+             (data.schoolType == 'Ortaokul' || data.schoolType == 'Lise') &&
+             data.grade is int && data.grade >= 5 && data.grade <= 12 &&
+             data.avatar is string && data.avatar.size() <= 10 &&
+             data.xp is int && data.xp >= 0 &&
+             data.studyGoalHours is int && data.studyGoalHours >= 1 && data.studyGoalHours <= 100 &&
+             data.joinedAt is string && data.joinedAt.size() <= 50;
+    }
+
+    function isValidUsername(data, userId) {
+      return data.keys().hasAll(['userId']) && data.keys().size() == 1 &&
+             data.userId == userId;
+    }
+
+    function isValidFriend(data) {
+      return data.keys().hasAll(['friendId', 'username', 'name', 'avatar', 'xp', 'status', 'updatedAt']) &&
+             data.keys().size() == 7 &&
+             data.friendId is string && data.friendId.size() <= 128 &&
+             data.username is string && data.username.size() >= 3 && data.username.size() <= 30 &&
+             data.name is string && data.name.size() <= 100 &&
+             data.avatar is string && data.avatar.size() <= 10 &&
+             data.xp is int && data.xp >= 0 &&
+             (data.status == 'request_sent' || data.status == 'request_received' || data.status == 'accepted') &&
+             data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    function isValidStudyLog(data) {
+      return data.keys().hasAll(['id', 'date', 'subjectId', 'subjectName', 'topicId', 'topicName', 'minutes', 'questionsSolved', 'status']) &&
+             data.keys().size() >= 9 &&
+             data.id is string && data.id.size() <= 128 &&
+             data.date is string && data.date.size() <= 30 &&
+             data.subjectId is string && data.subjectId.size() <= 128 &&
+             data.subjectName is string && data.subjectName.size() <= 100 &&
+             data.topicId is string && data.topicId.size() <= 128 &&
+             data.topicName is string && data.topicName.size() <= 100 &&
+             data.minutes is int && data.minutes >= 0 &&
+             data.questionsSolved is int && data.questionsSolved >= 0 &&
+             (data.status == 'Anladım' || data.status == 'Tekrar Etmeliyim' || data.status == 'Zorlandım' || data.status == 'Perfect' || data.status == 'Review' || data.status == 'Struggling');
+    }
+
+    function isValidQuizResult(data) {
+      return data.keys().hasAll(['id', 'topicId', 'topicName', 'subjectId', 'subjectName', 'score', 'totalQuestions', 'completedAt']) &&
+             data.keys().size() == 8 &&
+             data.id is string && data.id.size() <= 128 &&
+             data.topicId is string && data.topicId.size() <= 128 &&
+             data.topicName is string && data.topicName.size() <= 100 &&
+             data.subjectId is string && data.subjectId.size() <= 128 &&
+             data.subjectName is string && data.subjectName.size() <= 100 &&
+             data.score is int && data.score >= 0 &&
+             data.totalQuestions is int && data.totalQuestions >= 0 &&
+             data.completedAt is string && data.completedAt.size() <= 50;
+    }
+
+    // Rules matching each collection path
+
+    // 1. User Profiles
+    match /users/{userId} {
+      allow get: if isSignedIn(); // Allow profile lookup for friend displaying
+      allow list: if isSignedIn(); // We can query users to discover/search for friends
+      
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      
+      allow update: if isOwner(userId) && isValidUser(incoming()) &&
+                       incoming().username == existing().username &&
+                       incoming().joinedAt == existing().joinedAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['name', 'schoolType', 'grade', 'avatar', 'xp', 'studyGoalHours']);
+                       
+      allow delete: if isOwner(userId);
+      
+      // 2. Friends subcollection
+      match /friends/{friendId} {
+        allow get: if isOwner(userId) || (isSignedIn() && request.auth.uid == friendId);
+        allow list: if isOwner(userId);
+        
+        allow create: if (
+          // Case A: Owner adds a friend / sends a pending request
+          (isOwner(userId) && isValidFriend(incoming()) && incoming().status == 'request_sent' && incoming().friendId == friendId) ||
+          // Case B: Friend registers themselves as 'request_received' in recipient's bucket
+          (isSignedIn() && request.auth.uid == friendId && isValidFriend(incoming()) && incoming().status == 'request_received' && userId != request.auth.uid)
+        );
+        
+        allow update: if (
+          // Case A: Owner updates a friend's record (e.g., accepting pending request or updating synced XP)
+          (isOwner(userId) && isValidFriend(incoming()) && 
+           incoming().diff(existing()).affectedKeys().hasOnly(['status', 'avatar', 'xp', 'name', 'updatedAt'])) ||
+          // Case B: Peer friend updates their state (e.g. syncing fresh XP, updating status)
+          (isSignedIn() && request.auth.uid == friendId && isValidFriend(incoming()) && 
+           incoming().diff(existing()).affectedKeys().hasOnly(['status', 'avatar', 'xp', 'name', 'updatedAt']))
+        );
+        
+        allow delete: if isOwner(userId) || (isSignedIn() && request.auth.uid == friendId);
+      }
+
+      // 3. Study Logs Subcollection
+      match /studyLogs/{logId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidStudyLog(incoming());
+        allow delete: if isOwner(userId);
+      }
+
+      // 4. Quiz Results Subcollection
+      match /quizResults/{quizId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidQuizResult(incoming());
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // 5. Usernames unique lock registry
+    match /usernames/{username} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn(); // Friend usernames verification queries
+      
+      allow create: if isSignedIn() && isValidUsername(incoming(), request.auth.uid) && isValidId(username);
+      // Usernames are immutable and cannot be edited by users
+      allow update: if false; 
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+  }
+}
