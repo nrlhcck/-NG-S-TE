@@ -433,17 +433,18 @@ export default function Friends({ user, onUpdateUser }: FriendsProps) {
   };
 
   const renderAvatar = (avString: string) => {
-    if (avString.startsWith('http://') || avString.startsWith('https://') || avString.includes('/') || avString.includes('.')) {
+    const avatarToRender = avString || '🎒';
+    if (avatarToRender.startsWith('http://') || avatarToRender.startsWith('https://') || avatarToRender.includes('/') || avatarToRender.includes('.')) {
       return (
         <img 
-          src={avString} 
+          src={avatarToRender} 
           alt="Friend avatar" 
           referrerPolicy="no-referrer"
           className="h-full w-full object-cover rounded-full" 
         />
       );
     }
-    return <span className="text-xl select-none">{avString}</span>;
+    return <span className="text-xl select-none">{avatarToRender}</span>;
   };
 
   return (

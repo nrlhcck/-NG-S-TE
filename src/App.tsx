@@ -35,17 +35,18 @@ export default function App() {
   };
 
   const renderAvatar = (avString: string) => {
-    if (avString.startsWith('http://') || avString.startsWith('https://') || avString.includes('/') || avString.includes('.')) {
+    const avatarToRender = avString || '🎒';
+    if (avatarToRender.startsWith('http://') || avatarToRender.startsWith('https://') || avatarToRender.includes('/') || avatarToRender.includes('.')) {
       return (
         <img 
-          src={avString} 
+          src={avatarToRender} 
           alt="Profile Avatar" 
           referrerPolicy="no-referrer"
           className="h-full w-full object-cover rounded-full" 
         />
       );
     }
-    return <span className="text-xl select-none">{avString}</span>;
+    return <span className="text-xl select-none">{avatarToRender}</span>;
   };
 
   if (!currentUser) {

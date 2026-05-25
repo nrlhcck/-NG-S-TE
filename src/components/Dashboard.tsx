@@ -313,17 +313,18 @@ export default function Dashboard({ user, onUpdateUser }: DashboardProps) {
 
   // Check if avatar is an image URL or an emoji
   const renderAvatar = (avString: string) => {
-    if (avString.startsWith('http://') || avString.startsWith('https://') || avString.includes('/') || avString.includes('.')) {
+    const avatarToRender = avString || '🎒';
+    if (avatarToRender.startsWith('http://') || avatarToRender.startsWith('https://') || avatarToRender.includes('/') || avatarToRender.includes('.')) {
       return (
         <img 
-          src={avString} 
+          src={avatarToRender} 
           alt="Profile Avatar" 
           referrerPolicy="no-referrer"
           className="h-full w-full object-cover rounded-2xl" 
         />
       );
     }
-    return <span className="text-4xl select-none">{avString}</span>;
+    return <span className="text-4xl select-none">{avatarToRender}</span>;
   };
 
   return (
